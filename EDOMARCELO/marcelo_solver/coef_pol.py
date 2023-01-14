@@ -24,6 +24,9 @@ def cfcond_termica(
         Retorna:
         · ndarray ou float  de condutividades térmicas em W/m.K
     """
+    temp = np.array(temp)
+    temps_inf_interval =  np.array(temps_inf_interval)
+    temps_sup_interval =  np.array(temps_sup_interval)
     if unid.lower() == 'c':
         temp += 273.15
         temps_inf_interval += 273.15
