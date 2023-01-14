@@ -28,7 +28,6 @@ def cfcond_termica(
         temp += 273.15
         temps_inf_interval += 273.15
         temps_sup_interval += 273.15
-
     elif unid.lower() == 'k':
         pass
     else:
@@ -59,13 +58,13 @@ def cfcond_termica(
             # intevalo 1: 800 < temp <= 1515
             temps_alt = temp[
                 np.greater(
-                    temp, [temps_sup_interval[0] + 273.15]
+                    temp, [temps_sup_interval[0]]
                 )
             ]
             print(temps_alt)
             temps_alt = temps_alt[
                 np.less_equal(
-                    temps_alt, [temps_sup_interval[1] + 273.15]
+                    temps_alt, [temps_sup_interval[1]]
                 )
             ]
             coef_k2 = np.ones_like(temps_alt)
