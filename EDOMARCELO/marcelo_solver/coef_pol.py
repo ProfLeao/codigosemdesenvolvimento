@@ -3,8 +3,8 @@ import numpy as np
 def cfcond_termica(
     temp, 
     unid = 'K',
-    temps_inf_interval = [20.,800.], # intervalo de baixas temperaturas
-    temps_sup_interval = [800.,1515.] # intervalo de temperaturas superiores
+    temps_inf_interval = [293.15, 1073.15], # intervalo de baixas temperaturas
+    temps_sup_interval = [1073.15,1788.15] # intervalo de temperaturas superiores
 ):
     """
         Determina o coeficiente de condutividade térmica para temperaturas 
@@ -26,6 +26,9 @@ def cfcond_termica(
     """
     if unid.lower() == 'c':
         temp += 273.15
+        temps_inf_interval += 273.15
+        temps_sup_interval += 273.15
+
     elif unid.lower() == 'k':
         pass
     else:
@@ -39,12 +42,12 @@ def cfcond_termica(
             # intevalo 1: 20 <= temp <= 800
             temps_bx = temp[
                 np.greater_equal(
-                    temp, [temps_inf_interval[0] + 273.15]
+                    temp, [temps_inf_interval[0]]
                 )
             ]
             temps_bx = temps_bx[
                 np.less_equal(
-                    temps_bx, [temps_inf_interval[1] + 273.15]
+                    temps_bx, [temps_inf_interval[1]]
                 )
             ]
             print(temps_bx)
@@ -76,6 +79,7 @@ def cfcond_termica(
                 "ERRO!\nIntervalo de temperatura indevido."
                 )
         return np.concatenate((coef_k1, coef_k2))
+
     elif type(temp) in [int, float, complex]:
         if temp >=  temps_inf_interval[0] and temp <=  temps_inf_interval[1]:
             coef_k = 54. - 3.33 * np.power(temp, [2])
