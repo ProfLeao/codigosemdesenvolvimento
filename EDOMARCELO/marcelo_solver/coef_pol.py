@@ -44,12 +44,13 @@ def cfcond_termica(
             ]
             temps_bx = temps_bx[
                 np.less_equal(
-                    temp, [temps_inf_interval[1] + 273.15]
+                    temps_bx, [temps_inf_interval[1] + 273.15]
                 )
             ]
-            coef_k = 54. - 3.33 * np.power(temps_bx, [2])
+            print(temps_bx)
+            coef_k1 = 54. - 3.33 * np.power(temps_bx, [2])
             any_interval[0] = True
-        except:
+        except TimeoutError:
             pass
         try:
             # intevalo 1: 800 < temp <= 1515
@@ -58,20 +59,23 @@ def cfcond_termica(
                     temp, [temps_sup_interval[0] + 273.15]
                 )
             ]
-            temps_alt = temps_bx[
+            print(temps_alt)
+            temps_alt = temps_alt[
                 np.less_equal(
-                    temp, [temps_sup_interval[1] + 273.15]
+                    temps_alt, [temps_sup_interval[1] + 273.15]
                 )
             ]
-            coef_k = 27.3
+            coef_k2 = np.ones_like(temps_alt)
+            coef_k2 = coef_k2 * 27.3 
             any_interval[1] = True             
-        except:
+        except TimeoutError:
             pass
 
         if not True in any_interval:
             raise ValueError(
                 "ERRO!\nIntervalo de temperatura indevido."
                 )
+        return np.concatenate((coef_k1, coef_k2))
     elif type(temp) in [int, float, complex]:
         if temp >=  temps_inf_interval[0] and temp <=  temps_inf_interval[1]:
             coef_k = 54. - 3.33 * np.power(temp, [2])

@@ -1,4 +1,4 @@
-from coef_pol import *
+from .coef_pol import *
 import matplotlib.pyplot as plt
 
 def teste_condterm(teste):
