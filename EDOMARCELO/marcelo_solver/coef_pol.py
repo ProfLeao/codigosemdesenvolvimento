@@ -116,10 +116,10 @@ def cfcond_termica(
 def calesp_vol(
     temp, 
     unid = 'K',
-    temps_itv_1 = [20 + 273.15, 60020 + 273.15], 
-    temps_itv_2 = [600 + 273.15, 735 + 273.15],
-    temps_itv_3 = [735 + 273.15, 900] + 273.15,
-    temps_itv_4 = [900 + 273.15, 1515 + 273.15]
+    temps_itv_1 = [20. + 273.15, 600. + 273.15], 
+    temps_itv_2 = [600. + 273.15, 735. + 273.15],
+    temps_itv_3 = [735. + 273.15, 900. + 273.15],
+    temps_itv_4 = [900. + 273.15, 1515. + 273.15]
 ):
     """
         Determina o calor específico volumar para temperaturas (escalar)
