@@ -24,6 +24,7 @@ def cfcond_termica(
         Retorna:
         · ndarray ou float  de condutividades térmicas em W/m.K
     """
+    # Type casting para as diferentes entradas de tipo. 
     try:
         temp = float(temp)
     except TypeError:
@@ -60,6 +61,7 @@ def cfcond_termica(
             f"ERRO!\nA unidade de medida {unid} é desconhecida."
         )
 
+    # Aplica as equações segundo o tipo e o intervalo de temperatura
     if str(type(temp)) == "<class 'numpy.ndarray'>":
         any_interval = [False, False]
 
@@ -139,6 +141,7 @@ def calesp_vol(
         Retorna:
         · ndarray ou float  de calores específicos volumares em K/kg.K
     """
+    # Type casting para as diferentes entradas de tipo.
     try:
         temp = float(temp)
     except TypeError:
@@ -176,7 +179,75 @@ def calesp_vol(
     elif unid.lower() == 'c' and change_def[3]:
         temp += 273.15
         temps_itrvs[3] = temps_itrvs[3] + 273.15
+    elif unid.lower() == 'k':
+        pass
     else:
         raise ValueError(
             f"ERRO!\nA unidade de medida {unid} é desconhecida."
         )
+    
+    # Aplica as equações segundo o tipo e o intervalo de temperatura
+    if str(type(temp)) == "<class 'numpy.ndarray'>":
+        any_interval = [False for l in range(len(temps_itrvs))]
+
+        # intevalo 1: 20 <= temp <= 600
+        temps_0 = temp[
+            np.greater_equal(
+                temp, [temps_itrvs[0][0]]
+            )
+        ]
+        temps_0 = temps_1[
+            np.less_equal(
+                temps_0, [temps_itrvs[0][1]]
+            )
+        ]
+        cv0 = 425. + 7.73e-1 * temps0
+        if cv0.size != 0: any_interval[0] = True
+
+        # intevalo 1: 600 < temp <= 735
+        temps_1 = temp[
+            np.greater(
+                temp, [temps_itrvs[1][0]]
+            )
+        ]
+        temps_1 = temps_1[
+            np.less_equal(
+                temps_1, [temps_itrvs[1][1]]
+            )
+        ]
+        cv1 = 425. + 13002/(738. - temps_1)
+        if cv1.size != 0: any_interval[1] = True
+
+        # intevalo 1: 735 < temp <= 900
+        temps_2 = temp[
+            np.greater(
+                temp, [temps_itrvs[2][0]]
+            )
+        ]
+        temps_2 = temps_2[
+            np.less_equal(
+                temps_2, [temps_itrvs[2][1]]
+            )
+        ]
+        cv2 = 545. + 17820./(temps_2 - 731.)
+        if cv2.size != 0: any_interval[2] = True
+
+        # intevalo 1: 900 < temp <= 1515
+        temps_3 = temp[
+            np.greater(
+                temp, [temps_itrvs[3][0]]
+            )
+        ]
+        temps_3 = temps_3[
+            np.less_equal(
+                temps_3, [temps_itrvs[3][1]]
+            )
+        ]
+        cv3 = 650.
+        if cv3.size != 0: any_interval[3] = True
+
+        if not True in any_interval:
+            raise ValueError(
+                "ERRO!\nIntervalo de temperatura indevido."
+                )
+        return np.co
