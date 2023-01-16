@@ -110,3 +110,32 @@ def cfcond_termica(
                 f"\n{temps_inf_interval}\n{temps_sup_interval}"
             )
     return coef_k
+
+def calesp_vol(
+    temp, 
+    unid = 'K',
+    temps_itv_1 = [20 + 273.15, 60020 + 273.15], 
+    temps_itv_2 = [600 + 273.15, 735 + 273.15],
+    temps_itv_3 = [735 + 273.15, 900] + 273.15,
+    temps_itv_4 = [900 + 273.15, 1515 + 273.15]
+):
+    """
+        Determina o calor específico volumar para temperaturas (escalar)
+        ou vetores de temperaturas.
+
+        Recebe:
+        · temp(float ou ndarray) - temperaturas de cálculo. 
+        · [unid(str)] - caractere 'K' ou 'C' para determinar a unidade de 
+        temperatura 
+        · [temps_itv_1(list)] - lista de dois elementos com as 
+        temperaturas inferior e superior para o primeiro polinômio de cv.
+        · [temps_itv_2(list)] - lista de dois elementos com as 
+        temperaturas inferior e superior para o segundo polinômio de cv.
+        · [temps_itv_3(list)] - lista de dois elementos com as 
+        temperaturas inferior e superior para o terceiro polinômio de cv.
+        · [temps_itv_4(list)] - lista de dois elementos com as 
+        temperaturas inferior e superior para o quarto polinômio de cv.
+
+        Retorna:
+        · ndarray ou float  de calores específicos volumares em K/kg.K
+    """
