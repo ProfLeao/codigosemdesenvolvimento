@@ -98,10 +98,14 @@ def cfcond_termica(
             raise ValueError(
                 "ERRO!\nIntervalo de temperatura indevido."
                 )
+        
         temps_coefs = np.array(
-            np.concatenate(coef_k1, coef_k2),
-            np.concatenate(temps_bx, temps_alt)
+            [
+                np.concatenate([temps_bx, temps_alt]),
+                np.concatenate([coef_k1, coef_k2])
+            ]
         )
+
         return temps_coefs
             
     elif type(temp) in [int, float, complex]:
