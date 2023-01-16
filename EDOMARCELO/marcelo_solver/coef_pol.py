@@ -201,7 +201,9 @@ def calesp_vol(
                 temps_0, [temps_itrvs[0][1]]
             )
         ]
-        cv0 = 425. + 7.73e-1 * temps0
+        cv0 = 425. + 7.73e-1 * temps0 -\
+            1.69e-3 * np.power(temps0,2) -\
+            2.22e-6 * np.power(temps0,3)
         if cv0.size != 0: any_interval[0] = True
 
         # intevalo 1: 600 < temp <= 735
@@ -251,3 +253,25 @@ def calesp_vol(
                 "ERRO!\nIntervalo de temperatura indevido."
                 )
         return np.concatenate((cv0, cv1, cv2, cv3))
+    elif type(temp) == float:
+        if temp >=  temps_itrvs[0][0] and temp <=  temps_itrvs[0][1]:
+            # intevalo 1: 20 <= temp <= 600
+            cv = 425. + 7.73e-1 * temps0 -\
+            1.69e-3 * np.power(temps0,2) -\
+            2.22e-6 * np.power(temps0,3)
+        elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
+            # intevalo 1: 600 < temp <= 735
+            cv = 425. + 13002/(738. - temps_1)
+        elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
+            # intevalo 1: 735 < temp <= 900
+            cv = 545. + 17820./(temps_2 - 731.)
+        elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
+            # intevalo 1: 900 < temp <= 1515
+            cv =650.
+        else:
+            raise ValueError(
+                "ERRO!\n"+\
+                f"A temperatura {temp} não é definida no intervalo de"+\
+                "temperaturas do modelo."
+            )
+    return cv
