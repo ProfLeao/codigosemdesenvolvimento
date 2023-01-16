@@ -139,3 +139,44 @@ def calesp_vol(
         Retorna:
         · ndarray ou float  de calores específicos volumares em K/kg.K
     """
+    try:
+        temp = float(temp)
+    except TypeError:
+        temp = np.array(temp, dtype=np.float64)
+    
+    # Verifica mudança nos parâmetros default
+    change_def = []
+    temps_itrvs = [
+        temps_itv_1, temps_itv_2,
+        temps_itv_3, temps_itv_4
+    ]
+
+    for tp, pd in zip(temps_itrvs, cfcond_termica.__defaults__[1:]):
+        change_def.append(not (tp == pd))
+
+    change_def.append(
+        (change_def[0] and change_def[1]) and 
+        (change_def[2] and change_def[3])
+    ) # O último registro da lista marca a 
+      # mudança de todos os parâmetros
+
+    if unid.lower() == 'c' and change_def[-1]:
+        temp += 273.15
+        for tidx in range(len(temps_itrvs)):
+            temps_itrvs[tidx] = temps_itrvs[tidx] + 273.15
+    elif unid.lower() == 'c' and change_def[0]:
+        temp += 273.15
+        temps_itrvs[0] = temps_itrvs[0] + 273.15
+    elif unid.lower() == 'c' and change_def[1]:
+        temp += 273.15
+        temps_itrvs[1] = temps_itrvs[1] + 273.15
+    elif unid.lower() == 'c' and change_def[2]:
+        temp += 273.15
+        temps_itrvs[2] = temps_itrvs[2] + 273.15
+    elif unid.lower() == 'c' and change_def[3]:
+        temp += 273.15
+        temps_itrvs[3] = temps_itrvs[3] + 273.15
+    else:
+        raise ValueError(
+            f"ERRO!\nA unidade de medida {unid} é desconhecida."
+        )
