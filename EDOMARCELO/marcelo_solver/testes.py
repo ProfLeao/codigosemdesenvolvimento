@@ -31,24 +31,24 @@ def teste_condterm(teste):
 
     if teste == "VECTEMP-VAL":
         temp = np.arange(20.,1515.,0.1) + 273.15
-        hs = cfcond_termica(temp)
+        matriz = cfcond_termica(temp)
         fig, ax = plt.subplots()
-        ax.plot(temp, hs)
+        ax.plot(matriz[0], matriz[1])
         return fig, ax
     elif teste == "VECTEMP-PARC-INVAL":
         temp = np.arange(0.,2000.,0.1) + 273.15
         print(f"Testando um vetor de temperaturas entre {temp[0]} e {temp[-1]}")
-        hs = cfcond_termica(temp)
+        matriz = cfcond_termica(temp)
         fig, ax = plt.subplots()
-        ax.plot(temp, hs)
+        ax.plot(matriz[0], matriz[1])
         return fig, ax
     elif teste == "RANDTEMP-VAL":
-        temp = np.randint(20,1515, size=300)
+        temp = np.random.randint(20,1515, size=100)
         hs = np.empty_like(temp)
         for i,t in enumerate(temp):
-            hs[i] = cfcond_termica(t)
+            hs[i] = cfcond_termica(t, 'c')
 
         fig, ax  = plt.subplots()
-        ax.plot(temp, hs, "--b")
+        ax.plot(temp, hs, ".b")
         return fig, ax
 
