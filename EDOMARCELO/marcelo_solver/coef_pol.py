@@ -76,7 +76,7 @@ def cfcond_termica(
                 temps_bx, [temps_inf_interval[1]]
             )
         ]
-        coef_k1 = 54. - 3.33 * np.power(temps_bx, [2])
+        coef_k1 = 54. - 3.33e-2 * temps_bx
         if coef_k1.size != 0: any_interval[0] = True
 
         # intevalo 1: 800 < temp <= 1515
@@ -110,7 +110,7 @@ def cfcond_termica(
             
     elif type(temp) in [int, float, complex]:
         if temp >=  temps_inf_interval[0] and temp <=  temps_inf_interval[1]:
-            coef_k = 54. - 3.33 * np.power(temp, [2])[0]
+            coef_k = 54. - 3.33e-2 * temp
         elif temp > temps_sup_interval[0] and temp <=  temps_sup_interval[1]:
             coef_k = 27.3
         else:
