@@ -250,4 +250,4 @@ def calesp_vol(
             raise ValueError(
                 "ERRO!\nIntervalo de temperatura indevido."
                 )
-        return np.co
+        return np.concatenate((cv0, cv1, cv2, cv3))
