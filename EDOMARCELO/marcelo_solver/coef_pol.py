@@ -213,7 +213,7 @@ def calesp_vol(
             )
         ]
         cv0 = 425. + 7.73e-1 * temps_0 -\
-            1.69e-3 * np.power(temps_0,2) -\
+            1.69e-3 * np.power(temps_0,2) +\
             2.22e-6 * np.power(temps_0,3)
         if cv0.size != 0: any_interval[0] = True
 
@@ -275,7 +275,7 @@ def calesp_vol(
         if temp >=  temps_itrvs[0][0] and temp <=  temps_itrvs[0][1]:
             # intevalo 1: 20 <= temp <= 600
             cv = 425. + 7.73e-1 * temp -\
-            1.69e-3 * np.power(temp,2) -\
+            1.69e-3 * np.power(temp,2) +\
             2.22e-6 * np.power(temp,3)
         elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
             # intevalo 1: 600 < temp <= 735
