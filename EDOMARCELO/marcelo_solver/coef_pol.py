@@ -302,7 +302,7 @@ def densidade(
     temps_itv_3 = [853., 1515.],
 ):
     """
-        Determina o calor específico volumar para temperaturas (escalar)
+        Determina a densidade para temperaturas (escalar)
         ou vetores de temperaturas.
 
         Recebe:
@@ -315,11 +315,9 @@ def densidade(
         temperaturas inferior e superior para o segundo polinômio de cv.
         · [temps_itv_3(list)] - lista de dois elementos com as 
         temperaturas inferior e superior para o terceiro polinômio de cv.
-        · [temps_itv_4(list)] - lista de dois elementos com as 
-        temperaturas inferior e superior para o quarto polinômio de cv.
 
         Retorna:
-        · ndarray ou float  de calores específicos volumares em J/kg.K
+        · ndarray ou float  de densidades em kg/m³
     """
     # Type casting para as diferentes entradas de tipo.
     try:
@@ -329,19 +327,14 @@ def densidade(
     
     # Verifica mudança nos parâmetros default
     change_def = []
-    temps_itrvs = [
-        temps_itv_1, temps_itv_2,
-        temps_itv_3, temps_itv_4
-    ]
+    temps_itrvs = [temps_itv_1, temps_itv_2,temps_itv_3]
     
-    for tp, pd in zip(temps_itrvs, calesp_vol.__defaults__[1:]):
+    for tp, pd in zip(temps_itrvs, densidade.__defaults__[1:]):
         change_def.append(not (tp == pd))
 
-    change_def.append(
-        (change_def[0] and change_def[1]) and 
-        (change_def[2] and change_def[3])
-    ) # O último registro da lista marca a 
-      # mudança de todos os parâmetros
+    change_def.append(change_def[0] and change_def[1] and change_def[2]) 
+    # O último registro da lista marca a 
+    # mudança de todos os parâmetros
 
     if unid.lower() == 'k' and change_def[-1]:
         temp -= 273.15
@@ -356,9 +349,6 @@ def densidade(
     elif unid.lower() == 'k' and change_def[2]:
         temp -= 273.15
         temps_itrvs[2] -= 273.15
-    elif unid.lower() == 'k' and change_def[3]:
-        temp -= 273.15
-        temps_itrvs[3] -= 273.15
     elif unid.lower() == 'k':
         temp -= 273.15
     elif unid.lower() == 'c':
@@ -372,7 +362,7 @@ def densidade(
     if str(type(temp)) == "<class 'numpy.ndarray'>":
         any_interval = [False for l in range(len(temps_itrvs))]
 
-        # intevalo 1: 20 <= temp <= 600
+        # intevalo 1: 25 <= temp <= 689
         temps_0 = temp[
             np.greater_equal(
                 temp, [temps_itrvs[0][0]]
@@ -383,12 +373,10 @@ def densidade(
                 temps_0, [temps_itrvs[0][1]]
             )
         ]
-        cv0 = 425. + 7.73e-1 * temps_0 -\
-            1.69e-3 * np.power(temps_0,2) -\
-            2.22e-6 * np.power(temps_0,3)
+        cv0 = -0.3373 * temps_0 + 7871.
         if cv0.size != 0: any_interval[0] = True
 
-        # intevalo 1: 600 < temp <= 735
+        # intevalo 1: 689 < temp <= 853
         temps_1 = temp[
             np.greater(
                 temp, [temps_itrvs[1][0]]
@@ -399,10 +387,10 @@ def densidade(
                 temps_1, [temps_itrvs[1][1]]
             )
         ]
-        cv1 = 425. + 13002/(738. - temps_1)
+        cv1 = 0.1226 * temps_1 + 7556.
         if cv1.size != 0: any_interval[1] = True
 
-        # intevalo 1: 735 < temp <= 900
+        # intevalo 1: 853 < temp <= 1515
         temps_2 = temp[
             np.greater(
                 temp, [temps_itrvs[2][0]]
@@ -413,22 +401,8 @@ def densidade(
                 temps_2, [temps_itrvs[2][1]]
             )
         ]
-        cv2 = 545. + 17820./(temps_2 - 731.)
+        cv2 = -0.5575 * temps_2 + 8158.
         if cv2.size != 0: any_interval[2] = True
-
-        # intevalo 1: 900 < temp <= 1515
-        temps_3 = temp[
-            np.greater(
-                temp, [temps_itrvs[3][0]]
-            )
-        ]
-        temps_3 = temps_3[
-            np.less_equal(
-                temps_3, [temps_itrvs[3][1]]
-            )
-        ]
-        cv3 = 650. * np.ones_like(temps_3)
-        if cv3.size != 0: any_interval[3] = True
 
         if not True in any_interval:
             raise ValueError(
@@ -436,31 +410,26 @@ def densidade(
                 )
         temps_cv = np.array([
                 np.concatenate([
-                    temps_0, temps_1, temps_2, temps_3
+                    temps_0, temps_1, temps_2
                 ]),
-                np.concatenate([cv0, cv1, cv2, cv3])
+                np.concatenate([cv0, cv1, cv2])
         ])
         return temps_cv 
 
     elif type(temp) == float:
         if temp >=  temps_itrvs[0][0] and temp <=  temps_itrvs[0][1]:
-            # intevalo 1: 20 <= temp <= 600
-            cv = 425. + 7.73e-1 * temp -\
-            1.69e-3 * np.power(temp,2) -\
-            2.22e-6 * np.power(temp,3)
+            # intevalo 1: 25 <= temp <= 689
+            cv = -0.3373 * temp + 7871.
         elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
-            # intevalo 1: 600 < temp <= 735
-            cv = 425. + 13002/(738. - temp)
+            # intevalo 1: 689 < temp <= 853
+            cv = 0.1226 * temp + 7556.
         elif temp >  temps_itrvs[2][0] and temp <=  temps_itrvs[2][1]:
-            # intevalo 1: 735 < temp <= 900
-            cv = 545. + 17820./(temp - 731.)
-        elif temp >  temps_itrvs[3][0] and temp <=  temps_itrvs[3][1]:
-            # intevalo 1: 900 < temp <= 1515
-            cv =650.
+            # intevalo 1: 853 < temp <= 1515
+            cv = -0.5575 * temp + 8158.
         else:
             raise ValueError(
                 "ERRO!\n"+\
-                f"A temperatura {temp} não é definida no intervalo de"+\
+                f"A temperatura {temp} não é definida no intervalo de "+\
                 "temperaturas do modelo."
             )
     return cv
