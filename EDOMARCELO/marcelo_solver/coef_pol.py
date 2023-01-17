@@ -2,9 +2,9 @@ import numpy as np
 
 def cfcond_termica(
     temp, 
-    unid = 'K',
-    temps_inf_interval = [293.15, 1073.15], # intervalo de baixas temperaturas
-    temps_sup_interval = [1073.15, 1788.15] # intervalo de temperaturas superiores
+    unid = 'C',
+    temps_inf_interval = [20, 800], # intervalo de baixas temperaturas
+    temps_sup_interval = [800, 1515] # intervalo de temperaturas superiores
 ):
     """
         Determina o coeficiente de condutividade térmica para temperaturas 
@@ -42,19 +42,19 @@ def cfcond_termica(
     temps_inf_interval =  np.array(temps_inf_interval, dtype=np.float64)
     temps_sup_interval =  np.array(temps_sup_interval, dtype=np.float64)
 
-    if unid.lower() == 'c' and change_def:
-        temp += 273.15
-        temps_inf_interval += 273.15
-        temps_sup_interval += 273.15
-    elif unid.lower() == 'c' and change_def1:
-        temp += 273.15
-        temps_inf_interval += 273.15
-    elif unid.lower() == 'c' and change_def2:
-        temp += 273.15
-        temps_sup_interval += 273.15
-    elif unid.lower() == 'c':
-        temp += 273.15
+    if unid.lower() == 'k' and change_def:
+        temp -= 273.15
+        temps_inf_interval -= 273.15
+        temps_sup_interval -= 273.15
+    elif unid.lower() == 'k' and change_def1:
+        temp -= 273.15
+        temps_inf_interval -= 273.15
+    elif unid.lower() == 'k' and change_def2:
+        temp -= 273.15
+        temps_sup_interval -= 273.15
     elif unid.lower() == 'k':
+        temp -= 273.15
+    elif unid.lower() == 'c':
         pass
     else:
         raise ValueError(
@@ -76,7 +76,7 @@ def cfcond_termica(
                 temps_bx, [temps_inf_interval[1]]
             )
         ]
-        coef_k1 = 54. - 3.33e-2 * (temps_bx-273.15)
+        coef_k1 = 54. - 3.33e-2 * temps_bx
         if coef_k1.size != 0: any_interval[0] = True
 
         # intevalo 1: 800 < temp <= 1515
@@ -110,7 +110,7 @@ def cfcond_termica(
             
     elif type(temp) in [int, float, complex]:
         if temp >=  temps_inf_interval[0] and temp <=  temps_inf_interval[1]:
-            coef_k = 54. - 3.33e-2 * (temp-273.15)
+            coef_k = 54. - 3.33e-2 * temp
         elif temp > temps_sup_interval[0] and temp <=  temps_sup_interval[1]:
             coef_k = 27.3
         else:
@@ -125,10 +125,10 @@ def cfcond_termica(
 def calesp_vol(
     temp, 
     unid = 'K',
-    temps_itv_1 = [20. + 273.15, 600. + 273.15], 
-    temps_itv_2 = [600. + 273.15, 735. + 273.15],
-    temps_itv_3 = [735. + 273.15, 900. + 273.15],
-    temps_itv_4 = [900. + 273.15, 1515. + 273.15]
+    temps_itv_1 = [20., 600.], 
+    temps_itv_2 = [600., 735.],
+    temps_itv_3 = [735., 900.],
+    temps_itv_4 = [900., 1515.]
 ):
     """
         Determina o calor específico volumar para temperaturas (escalar)
@@ -172,23 +172,23 @@ def calesp_vol(
     ) # O último registro da lista marca a 
       # mudança de todos os parâmetros
 
-    if unid.lower() == 'c' and change_def[-1]:
-        temp += 273.15
+    if unid.lower() == 'k' and change_def[-1]:
+        temp -= 273.15
         for tidx in range(len(temps_itrvs)):
-            temps_itrvs[tidx] = temps_itrvs[tidx] + 273.15
-    elif unid.lower() == 'c' and change_def[0]:
+            temps_itrvs[tidx] -= 273.15
+    elif unid.lower() == 'k' and change_def[0]:
+        temp -= 273.15
+        temps_itrvs[0] -= 273.15
+    elif unid.lower() == 'k' and change_def[1]:
+        temp -= 273.15
+        temps_itrvs[1] -= 273.15
+    elif unid.lower() == 'k' and change_def[2]:
+        temp -= 273.15
+        temps_itrvs[2] -= 273.15
+    elif unid.lower() == 'k' and change_def[3]:
         temp += 273.15
-        temps_itrvs[0] = temps_itrvs[0] + 273.15
-    elif unid.lower() == 'c' and change_def[1]:
-        temp += 273.15
-        temps_itrvs[1] = temps_itrvs[1] + 273.15
-    elif unid.lower() == 'c' and change_def[2]:
-        temp += 273.15
-        temps_itrvs[2] = temps_itrvs[2] + 273.15
-    elif unid.lower() == 'c' and change_def[3]:
-        temp += 273.15
-        temps_itrvs[3] = temps_itrvs[3] + 273.15
-    elif unid.lower() == 'k':
+        temps_itrvs[3] -= 273.15
+    elif unid.lower() == 'c':
         pass
     else:
         raise ValueError(
