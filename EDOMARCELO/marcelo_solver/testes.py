@@ -78,7 +78,7 @@ def teste_cv(teste):
             operação da função.
             Espera-se o cálculo correto dos valores de h expressos de forma gráfica.
     """
-    print("Testes na função cfcond_termica().")
+    print("Testes na função teste_cv().")
 
     if teste == "VECTEMP-VAL":
         temp = np.arange(20.,1515.,0.1)
@@ -94,7 +94,7 @@ def teste_cv(teste):
         ax.plot(matriz[0], matriz[1])
         return fig, ax
     elif teste == "RANDTEMP-VAL":
-        temp = np.random.randint(20,1515, size=100)
+        temp = np.random.randint(20,1515, size=200)
         hs = np.empty_like(temp)
         for i,t in enumerate(temp):
             hs[i] = calesp_vol(t)

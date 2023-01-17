@@ -280,10 +280,10 @@ def calesp_vol(
         elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
             # intevalo 1: 600 < temp <= 735
             cv = 425. + 13002/(738. - temp)
-        elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
+        elif temp >  temps_itrvs[2][0] and temp <=  temps_itrvs[2][1]:
             # intevalo 1: 735 < temp <= 900
             cv = 545. + 17820./(temp - 731.)
-        elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
+        elif temp >  temps_itrvs[3][0] and temp <=  temps_itrvs[3][1]:
             # intevalo 1: 900 < temp <= 1515
             cv =650.
         else:
