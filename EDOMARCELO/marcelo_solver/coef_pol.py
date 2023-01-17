@@ -261,7 +261,14 @@ def calesp_vol(
             raise ValueError(
                 "ERRO!\nIntervalo de temperatura indevido."
                 )
-        return np.concatenate((cv0, cv1, cv2, cv3))
+        temps_cv = np.array([
+                np.concatenate([
+                    temps_0, temps_1, temps_2, temps_3
+                ]),
+                np.concatenate([cv0, cv1, cv2, cv3])
+        ])
+        return temps_cv 
+         
     elif type(temp) == float:
         if temp >=  temps_itrvs[0][0] and temp <=  temps_itrvs[0][1]:
             # intevalo 1: 20 <= temp <= 600
