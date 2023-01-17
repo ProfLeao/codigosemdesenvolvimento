@@ -30,13 +30,13 @@ def teste_condterm(teste):
     print("Testes na função cfcond_termica().")
 
     if teste == "VECTEMP-VAL":
-        temp = np.arange(20.,1515.,0.1) + 273.15
+        temp = np.arange(20.,1515.,0.1)
         matriz = cfcond_termica(temp)
         fig, ax = plt.subplots()
         ax.plot(matriz[0], matriz[1])
         return fig, ax
     elif teste == "VECTEMP-PARC-INVAL":
-        temp = np.arange(0.,2000.,0.1) + 273.15
+        temp = np.arange(0.,2000.,0.1)
         print(f"Testando um vetor de temperaturas entre {temp[0]} e {temp[-1]}")
         matriz = cfcond_termica(temp)
         fig, ax = plt.subplots()
@@ -81,15 +81,15 @@ def teste_cv(teste):
     print("Testes na função cfcond_termica().")
 
     if teste == "VECTEMP-VAL":
-        temp = np.arange(20.,1515.,0.1) + 273.15
-        matriz = cfcond_termica(temp)
+        temp = np.arange(20.,1515.,0.1)
+        matriz = calesp_vol(temp)
         fig, ax = plt.subplots()
         ax.plot(matriz[0], matriz[1])
         return fig, ax
     elif teste == "VECTEMP-PARC-INVAL":
-        temp = np.arange(0.,2000.,0.1) + 273.15
+        temp = np.arange(0.,2000.,0.1)
         print(f"Testando um vetor de temperaturas entre {temp[0]} e {temp[-1]}")
-        matriz = cfcond_termica(temp)
+        matriz = calesp_vol(temp)
         fig, ax = plt.subplots()
         ax.plot(matriz[0], matriz[1])
         return fig, ax
@@ -97,7 +97,7 @@ def teste_cv(teste):
         temp = np.random.randint(20,1515, size=100)
         hs = np.empty_like(temp)
         for i,t in enumerate(temp):
-            hs[i] = cfcond_termica(t, 'c')
+            hs[i] = calesp_vol(t)
 
         fig, ax  = plt.subplots()
         ax.plot(temp, hs, ".b")

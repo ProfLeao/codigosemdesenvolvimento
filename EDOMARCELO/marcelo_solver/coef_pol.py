@@ -12,7 +12,7 @@ def cfcond_termica(
 
         Recebe:
         · temp(float ou ndarray) - temperaturas de cálculo. 
-        · [unid(str)] - caractere 'K' ou 'C' para determinar a unidade de 
+        · [unid(str)] - caractere 'C' ou 'K' para determinar a unidade de 
         temperatura 
         · [temps_inf_interval(list)] - lista de dois elementos com as 
         temperaturas inferior e superior para os polinômios de condutividade 
@@ -124,7 +124,7 @@ def cfcond_termica(
 
 def calesp_vol(
     temp, 
-    unid = 'K',
+    unid = 'C',
     temps_itv_1 = [20., 600.], 
     temps_itv_2 = [600., 735.],
     temps_itv_3 = [735., 900.],
@@ -136,7 +136,7 @@ def calesp_vol(
 
         Recebe:
         · temp(float ou ndarray) - temperaturas de cálculo. 
-        · [unid(str)] - caractere 'K' ou 'C' para determinar a unidade de 
+        · [unid(str)] - caractere 'C' ou 'K' para determinar a unidade de 
         temperatura 
         · [temps_itv_1(list)] - lista de dois elementos com as 
         temperaturas inferior e superior para o primeiro polinômio de cv.
@@ -148,7 +148,7 @@ def calesp_vol(
         temperaturas inferior e superior para o quarto polinômio de cv.
 
         Retorna:
-        · ndarray ou float  de calores específicos volumares em K/kg.K
+        · ndarray ou float  de calores específicos volumares em J/kg.K
     """
     # Type casting para as diferentes entradas de tipo.
     try:
@@ -162,8 +162,8 @@ def calesp_vol(
         temps_itv_1, temps_itv_2,
         temps_itv_3, temps_itv_4
     ]
-
-    for tp, pd in zip(temps_itrvs, cfcond_termica.__defaults__[1:]):
+    
+    for tp, pd in zip(temps_itrvs, calesp_vol.__defaults__[1:]):
         change_def.append(not (tp == pd))
 
     change_def.append(
@@ -186,8 +186,10 @@ def calesp_vol(
         temp -= 273.15
         temps_itrvs[2] -= 273.15
     elif unid.lower() == 'k' and change_def[3]:
-        temp += 273.15
+        temp -= 273.15
         temps_itrvs[3] -= 273.15
+    elif unid.lower() == 'k':
+        temp -= 273.15
     elif unid.lower() == 'c':
         pass
     else:
@@ -205,14 +207,14 @@ def calesp_vol(
                 temp, [temps_itrvs[0][0]]
             )
         ]
-        temps_0 = temps_1[
+        temps_0 = temps_0[
             np.less_equal(
                 temps_0, [temps_itrvs[0][1]]
             )
         ]
-        cv0 = 425. + 7.73e-1 * temps0 -\
-            1.69e-3 * np.power(temps0,2) -\
-            2.22e-6 * np.power(temps0,3)
+        cv0 = 425. + 7.73e-1 * temps_0 -\
+            1.69e-3 * np.power(temps_0,2) -\
+            2.22e-6 * np.power(temps_0,3)
         if cv0.size != 0: any_interval[0] = True
 
         # intevalo 1: 600 < temp <= 735
@@ -254,7 +256,7 @@ def calesp_vol(
                 temps_3, [temps_itrvs[3][1]]
             )
         ]
-        cv3 = 650.
+        cv3 = 650. * np.ones_like(temps_3)
         if cv3.size != 0: any_interval[3] = True
 
         if not True in any_interval:
@@ -268,19 +270,19 @@ def calesp_vol(
                 np.concatenate([cv0, cv1, cv2, cv3])
         ])
         return temps_cv 
-         
+
     elif type(temp) == float:
         if temp >=  temps_itrvs[0][0] and temp <=  temps_itrvs[0][1]:
             # intevalo 1: 20 <= temp <= 600
-            cv = 425. + 7.73e-1 * temps0 -\
-            1.69e-3 * np.power(temps0,2) -\
-            2.22e-6 * np.power(temps0,3)
+            cv = 425. + 7.73e-1 * temp -\
+            1.69e-3 * np.power(temp,2) -\
+            2.22e-6 * np.power(temp,3)
         elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
             # intevalo 1: 600 < temp <= 735
-            cv = 425. + 13002/(738. - temps_1)
+            cv = 425. + 13002/(738. - temp)
         elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
             # intevalo 1: 735 < temp <= 900
-            cv = 545. + 17820./(temps_2 - 731.)
+            cv = 545. + 17820./(temp - 731.)
         elif temp >  temps_itrvs[1][0] and temp <=  temps_itrvs[1][1]:
             # intevalo 1: 900 < temp <= 1515
             cv =650.
