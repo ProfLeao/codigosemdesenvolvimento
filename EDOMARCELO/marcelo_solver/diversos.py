@@ -1,5 +1,4 @@
 
-
 import json
 def carrega_parametros(path = "parametros.json"):
     with open("parametros.json") as fparm:

@@ -1,10 +1,28 @@
 import numpy as np
 import pandas as pd
 from marcelo_solver.edo_marcelo import edo_marcelo
+from marcelo_solver.man_data import carrega_parametros
 import json
 
 def main():
-    with open("parametros.json") as fparm:
-        parametros = json.load(fparm)
+    dicpar = carrega_parametros()
 
-    y0 = 
+    sol = edo_marcelo(
+        (dicpar[k] for k in dicpar.keys() if "coef" in k), 
+        (
+            [
+                dicpar["condicoes de contorno"]["extremidade consumida"][0],
+                dicpar["condicoes de contorno"]["bico de contato"][0]
+            ],
+            [
+                dicpar["condicoes de contorno"]["extremidade consumida"][1],
+                dicpar["condicoes de contorno"]["bico de contato"][1]
+            ]
+        ),
+        (
+            dicpar["intervalo de integração"][0],
+            dicpar["intervalo de integração"][1],
+            dicpar["discretização do intervalo"]
+        )
+    )
+
