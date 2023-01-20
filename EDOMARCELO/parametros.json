@@ -6,7 +6,7 @@
     "coef_r": "1.",
     "intervalo de integração": ["0","15"],
     "discretização do intervalo": "1e-3",
-    "condições de contorno": {
+    "condicoes de contorno": {
         "extremidade consumida": ["0.", "1515."],
         "bico de contato": ["15.", "158."]
     }
