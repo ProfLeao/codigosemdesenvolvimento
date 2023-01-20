@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
 from marcelo_solver.edo_marcelo import edo_marcelo
-from marcelo_solver.man_data import carrega_parametros
+from marcelo_solver.diversos import carrega_parametros
 import json
 
 def main():
     dicpar = carrega_parametros()
 
-    sol = edo_marcelo(
+    sol0, sol1 = edo_marcelo(
         (dicpar[k] for k in dicpar.keys() if "coef" in k), 
         (
             [
@@ -25,4 +25,12 @@ def main():
             dicpar["discretização do intervalo"]
         )
     )
+
+    np.savetxt(
+        "sol.csv", 
+        np.array([
+            [sol.t], [sol.y]
+        ])
+    )
+
 
