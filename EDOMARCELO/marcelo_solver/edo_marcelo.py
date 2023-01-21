@@ -3,7 +3,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 def edo_marcelo(
-    tup_parm,
+    parm,
     par_cond_cont,
     interv,
     method = "RK45", # Runge-Kutta de ordem 5(4)
@@ -16,11 +16,11 @@ def edo_marcelo(
         
         · parm:tuple (
             coef_w:float,
-            coef_h:dict, # ATENÇÃO AO TIPO DISTOANTE
+            dic_h:dict, # ATENÇÃO AO TIPO DISTOANTE
             coef_Tinf:float, 
             coef_j:float, 
             coef_r:float,
-            delta_h:float,
+            coef_delh:float,
             coef_V: float,
         ) - uma tupla de 7 parâmetros do tipo float para o modelo.
         
@@ -87,7 +87,7 @@ def edo_marcelo(
 
     dtdz0 = 1/cfcond_termica(par_cond_cont[1][1]) * (
         parm[0] * densidade(par_cond_cont[1][1]) * parm[5] -\
-        parm[3] * parn[6]
+        parm[3] * parm[6]
     )
 
     sol0 = solve_ivp(
