@@ -26,11 +26,5 @@ def main():
         )
     )
 
-    np.savetxt(
-        "sol.csv", 
-        np.array([
-            [sol.t], [sol.y]
-        ])
-    )
-
+    
 
