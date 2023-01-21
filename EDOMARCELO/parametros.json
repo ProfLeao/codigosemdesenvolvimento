@@ -1,10 +1,14 @@
 {
-    "coef_w": "1.", 
-    "coef_h": "1.",
-    "coef_Tinf": "1.",
-    "coef_j": "1.",
-    "coef_r": "1.",
-    "intervalo de integração": ["0","15"],
+    "coef_w": "75.",
+    "coef_h": {
+        "1175.": ["0.","9."],
+        "115": ["9.", "15."]
+    },
+    "coef_Tinf": "25.",
+    "coef_j": "99.47",
+    "coef_r": "5.62e-6",
+    "variacao da entalpia": "120.",
+    "intervalo de integração": ["0.","15."],
     "discretização do intervalo": "1e-3",
     "condicoes de contorno": {
         "extremidade consumida": ["0.", "1515."],

@@ -433,3 +433,45 @@ def densidade(
                 "temperaturas do modelo."
             )
     return cv
+
+def tc_convec(
+    pos:(str, float), 
+    intrvs:dict,
+    unid:str = 'mm'
+) -> float:
+    """
+        Determina o coeficiente de troca de calor por convecção para 
+        temperaturas (escalar) ou vetores de temperaturas.
+
+        Recebe:
+        · pos(float ou ndarray) - posição de cálculo. 
+        · [unid(str)] - caractere 'mm' ou 'm' para determinar a unidade de 
+        métrica 
+        · [temps_itv_1(list)] - lista de dois elementos com as 
+        posiçoes inferior e superior do primeiro intervalo.
+        · [temps_itv_2(list)] - lista de dois elementos com as 
+        posiçoes inferior e superior do segundo intervalo.
+        
+        Retorna:
+        · float  de densidades em W/mm².K
+    """
+    if type(pos) == str: temp = float(pos)
+
+    new_intrvs = dict()
+
+    # Carece de validação, implementar no futuro.
+    for k in intrvs.keys():
+        new_intrvs[float(k)] = np.array(
+            [float(v) for v in intrvs[k]]
+        )
+    del intrvs
+    if unid.lower() == 'm':
+        pos *= 1000.
+        for k in new_intrvs.keys():
+            new_intrvs[k] *= 1000.
+    for k in new_intrvs.keys():
+        if (
+            pos >= new_intrvs[k][0] and pos < new_intrvs[k][1]
+        ):
+            return k
+    

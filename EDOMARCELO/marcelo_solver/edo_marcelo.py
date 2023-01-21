@@ -16,11 +16,13 @@ def edo_marcelo(
         
         · parm:tuple (
             coef_w:float,
-            coef_h:float, 
+            coef_h:dict, # ATENÇÃO AO TIPO DISTOANTE
             coef_Tinf:float, 
             coef_j:float, 
-            coef_r:float
-        ) - uma tupla de 5 parâmetros do tipo float para o modelo.
+            coef_r:float,
+            delta_h:float,
+            coef_V: float,
+        ) - uma tupla de 7 parâmetros do tipo float para o modelo.
         
         · cond_cont:tuple (
             [cd00:float,cd01:float]:list, 
@@ -70,67 +72,30 @@ def edo_marcelo(
 
 
     """
-
-    #def modelo(v_z, v_temp):
-    #    # Primeira parcela
-    #    parc1 = cfcond_termica(v_temp[0]) *\
-    #         v_temp[2] + v_temp[1]*np.gradient(cfcond_termica(v_temp[0]))
-    #
-    #    # Segunda parcela
-    #    parc2 = tup_parm[0] * f_rho(v_temp[0]) *\
-    #        (f_cv(v_temp[0]) * v_temp[1] +\
-    #            v_temp[0] * np.gradient(f_cv(v_temp[0])))
-    #
-    #    # Terceira parcela
-    #    parc3 = - tup_parm[1] * (v_temp[0] - tup_parm[2])
-    #
-    #    # Quarta parcela
-    #    parc4 = np.power(tup_parm[3], 2) * tup_parm[4]
-    #
-    #    return parc1 + parc2 + parc3 + parc4
-    #
-    #sol0 = solve_ivp(
-    #    fun = modelo, 
-    #    t_span = interv[0:2],
-    #    y0 = np.array([par_cond_cont[0][1]]),
-    #    max_step = interv[2],
-    #    method = "RK45"
-    #)
-    #sol1 = solve_ivp(
-    #    fun = modelo, 
-    #    t_span = np.flip(interv[0:2]),
-    #    y0 = np.array([par_cond_cont[1][1]]),
-    #    max_step = -interv[2],
-    #    method = "RK45"
-    #)
-
-    #return sol0, sol1
     
     def modelo(v_z, v_temp):
         temp = v_temp[0]
         dtdz = v_temp[1]
         inv_k = 1/cfcond_termica(temp)
-        parc1 = -tup_parm[0] * densidade(temp) * calesp_vol(temp) * dtdz
-        parc2 = tup_parm[1] * (temp- tup_parm[2])
-        parc3 = - np.power(tup_parm[3], 2) * tup_parm[4]
+        parc1 = - parm[0] * densidade(temp) * calesp_vol(temp) * dtdz
+        parc2 = tc_convec(v_z, parm[1]) * (temp - parm[2])
+        parc3 = - np.power(parm[3], 2) * parm[4]
 
-        dvdz = parc1 + parc2 + parc3
+        dvdz = inv_k*(parc1 + parc2 + parc3)
 
         return [temp, dvdz]
+
+    dtdz0 = 1/cfcond_termica(par_cond_cont[1][1]) * (
+        parm[0] * densidade(par_cond_cont[1][1]) * parm[5] -\
+        parm[3] * parn[6]
+    )
 
     sol0 = solve_ivp(
         fun = modelo, 
         t_span = [interv[0], interv[1]],
-        y0 = [par_cond_cont[1][1], par_cond_cont[0][1]],
+        y0 = [par_cond_cont[1][1], dtdz0],
         t_eval= np.arange(interv[0], interv[1], interv[2]),
         method = "RK45"
     )
-    sol1 = solve_ivp(
-        fun = modelo, 
-        t_span = [interv[1], interv[0]],
-        y0 = [par_cond_cont[0][1], par_cond_cont[1][1]],
-        t_eval= np.arange(interv[1], interv[0], -interv[2]),
-        method = "RK45"
-    )
 
-    return sol0, sol1
+    return sol0
