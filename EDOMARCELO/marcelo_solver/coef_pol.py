@@ -3,8 +3,8 @@ import numpy as np
 def cfcond_termica(
     temp, 
     unid = 'C',
-    temps_inf_interval = [20, 800], # intervalo de baixas temperaturas
-    temps_sup_interval = [800, 1515] # intervalo de temperaturas superiores
+    temps_inf_interval = [20., 800.], # intervalo de baixas temperaturas
+    temps_sup_interval = [800., 1515.] # intervalo de temperaturas superiores
 ):
     """
         Determina o coeficiente de condutividade térmica para temperaturas 

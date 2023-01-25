@@ -4,12 +4,13 @@ from scipy.integrate import solve_ivp
 
 def edo_marcelo(
     parm,
-    par_cond_cont,
+    cond_cont,
     interv,
     method = "RK45", # Runge-Kutta de ordem 5(4)
     f_k = cfcond_termica,
     f_cv = calesp_vol,
-    f_rho = densidade
+    f_rho = densidade,
+    f_h = tc_convec
 ):
     """
         Recebe:
@@ -72,30 +73,41 @@ def edo_marcelo(
 
 
     """
-    
+    status = None
     def modelo(v_z, v_temp):
         temp = v_temp[0]
         dtdz = v_temp[1]
-        inv_k = 1/cfcond_termica(temp)
-        parc1 = - parm[0] * densidade(temp) * calesp_vol(temp) * dtdz
-        parc2 = tc_convec(v_z, parm[1]) * (temp - parm[2])
+        status = f"::-> Integrando a temperatura {temp:.3f}°C em {v_z:.3f} mm"
+        print(status, end='\r')
+        inv_k = 1/f_k(temp)
+        parc1 = - parm[0] * f_rho(temp) * f_cv(temp) * dtdz
+        parc2 = f_h(v_z, parm[1]) * (temp - parm[2])
         parc3 = - np.power(parm[3], 2) * parm[4]
 
         dvdz = inv_k*(parc1 + parc2 + parc3)
 
         return [temp, dvdz]
 
-    dtdz0 = 1/cfcond_termica(par_cond_cont[1][1]) * (
-        parm[0] * densidade(par_cond_cont[1][1]) * parm[5] -\
+    dtdz0 = 1/cfcond_termica(cond_cont[0][1]) * (
+        parm[0] * densidade(cond_cont[0][1]) * parm[5] -\
         parm[3] * parm[6]
     )
-
-    sol0 = solve_ivp(
+    #try:
+    sol = solve_ivp(
         fun = modelo, 
         t_span = [interv[0], interv[1]],
-        y0 = [par_cond_cont[1][1], dtdz0],
-        t_eval= np.arange(interv[0], interv[1], interv[2]),
-        method = "RK45"
+        y0 = [cond_cont[0][1], dtdz0],
+        t_eval= np.arange(interv[0], interv[1]+interv[2], interv[2]),
+        method = "RK45",
+        #max_step=interv[2]
     )
+    return sol
+    #except Exception as a:
+    #    with open("ult.log", 'w') as arquivo:
+    #        arquivo.write(
+    #            "Erro:\n" + str(a)
+    #        )
+    #        arquivo.write(str(status)+'\n')
 
-    return sol0
+
+    
