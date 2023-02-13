@@ -79,8 +79,8 @@ def edo_marcelo(
         dtdz = v_temp[1]
         status = f"::-> Integrando a temperatura {temp:.3f}°C em {v_z:.3f} mm"
         print(status, end='\r')
-        inv_k = 1/f_k(temp)
-        parc1 = - parm[0] * f_rho(temp) * f_cv(temp) * dtdz
+        inv_k = 1/f_k(temp,'K')
+        parc1 = - parm[0] * f_rho(temp, 'K') * f_cv(temp, 'K') * dtdz
         parc2 = f_h(v_z, parm[1]) * (temp - parm[2])
         parc3 = - np.power(parm[3], 2) * parm[4]
 
@@ -88,8 +88,8 @@ def edo_marcelo(
 
         return [temp, dvdz]
 
-    dtdz0 = 1/cfcond_termica(cond_cont[0][1]) * (
-        parm[0] * densidade(cond_cont[0][1]) * parm[5] -\
+    dtdz0 = 1/cfcond_termica(cond_cont[0][1], 'k') * (
+        parm[0] * densidade(cond_cont[0][1], 'k') * parm[5] -\
         parm[3] * parm[6]
     )
     #try:
