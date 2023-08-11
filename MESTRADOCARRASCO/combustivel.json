@@ -1,0 +1,39 @@
+{
+    "Dados Planta": {
+        "Clinquer": {
+            "Produção": 1500,
+            "Unidade" : "toneladas por dia - t/d"
+        },
+        "Consumo Específico de Energia": {
+            "Mínimo": 3440,
+            "Máximo": 3550,
+            "Unidade": "kJ/kg"
+        }
+    },
+    "Combustivel":{
+
+        "Petcoke" :{
+            "componentes": ["C", "H", "S", "O", "N" ],
+            "% de massa" : [87.40, 3.81, 1.57, 5.15, 0.03],
+            "PCI"        : 30472
+        },
+
+        "Moinha (Carvão Vegetal)" :{
+            "componentes": ["C", "H", "S", "O", "N" ],
+            "% de massa" : [73.30, 2.48, 0.26, 0.07, 0.07],
+            "PCI"        : 22990
+        },
+
+        "Blend (CDR)" :{
+            "componentes": ["C", "H", "S", "O", "N" ],
+            "% de massa" : [71.50, 4.08, 0.92, 0.44, 0.40],
+            "PCI"        : 8778
+        },
+
+        "Pneu" :{
+            "componentes": ["C", "H", "S", "O", "N" ],
+            "% de massa" : [62.50, 5.22, 0.08, 1.91, 0.03],
+            "PCI"        : 27170
+        }
+    }
+}
